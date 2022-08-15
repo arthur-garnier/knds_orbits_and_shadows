@@ -40,8 +40,8 @@ If Conserv is set to 1, then the vectors HAM and CAR respectively contain the va
 The synthax is shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data), where Lambda is the cosmological constant, M is the mass, Kerr is the Kerr parameter and Newman is the charge.
 The variable Image is a string formed with the name (with extension) of the picture to transform (the file should be in the same folder as the functions).
 The variable Accretion_data is a list with seven entries.
-Its first entry is a non-negative integer: set it to 0 yields the shadow without any accretion disk, set it to 1 gives the picture with the accretion disk and otherwise, the value should be even and only the shadow of the accretion disk is drawn, with a resolution equal to the chosen integer.
-The second entry of the list is the inclination angle from the equatorial plane (so that set this angle to 0 means to shadow the black hole from the equatorial plane).
+Its first entry is a non-negative integer: set it to 0 yields the shadow without any accretion disk, set it to 1 gives the picture with the accretion disk and otherwise, the value should be even and only the shadow of the accretion disk is drawn, with a resolution equal to the chosen even integer.
+The second entry of the list is the inclination angle from the equatorial plane (so that set this angle to 0 means to shadow the black hole, as seen from the equatorial plane).
 The third entry is a string setting the type of radiation required. Set it to " " only computes the effects (graviational, Doppler, both, see below) and yields the shift along the disk, displayed as a shade of colors from red to blue.
     Set this variable to "Black-body" computes the temperature as a blackbody radiation. Finally, set it to "Custom" allows to specify the inner and outer temperatures (see below).
 The fourth variable is a string too, specifying the various shifts to take into account. Set it to "Gravitation" (resp. to "Doppler") only computes the gravitational (resp. Doppler) shift. To take both effects into account, set this variable to "Doppler+". If " " is chosen, none of these effects is computed.
