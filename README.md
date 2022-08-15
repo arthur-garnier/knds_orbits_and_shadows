@@ -1,5 +1,8 @@
 User manual for the package "knds_orbits_and_shadows".
 
+This is a package for Scilab 6.1.1, loaded with IPCV 4.1.2, to draw the shadow of a Kerr--Newman--(anti) de Sitter (KNdS) black hole, possibly equipped with a thin Keplerian accretion disk, radiating as a blackbody. The shadow can be drawn from any standard image, or only the accretion disk is drawn on a black background.
+This package also allows to draw (massive or null) orbits in a KNdS space-time, using different integration methods of the geodesic equation.
+
 ---------------------------------------------------------------------------------------------------
 
 First of all, install Scilab 6.1.1 and the package IPCV 4.1.2 (https://ipcv.scilab-academy.com/).
