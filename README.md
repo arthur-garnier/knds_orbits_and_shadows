@@ -27,7 +27,7 @@ It also contains the library for the black-body radiation colors from http://www
 
 The synthax is as follows: [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Conserv), where Lambda is the cosmological constant, Mass is the mass of the black hole, Kerr is its Kerr parameter and Newman its charge.
 The vector IniConds records the initial datum of the geodesic, in Boyer-Lindquist coordinates and SI units, IniConds=(r0,theta0,phi0,\dot{r}0,\dot{theta}0,\dot{\phi}0).
-The variable Form denotes the formulation to take for the computation (a string with value "Polar", "Weierstrass" (for Lambda=0), "Euler-Lagrange", "Carter", "Hamilton", "Symplectic Euler p", "Symplectic Euler q", "Verlet" or "Stormer-Verlet").
+The variable Form denotes the formulation to take for the computation: a string with value "Polar", "Weierstrass" (for Lambda=0), "Euler-Lagrange", "Carter", "Hamilton", "Symplectic Euler p", "Symplectic Euler q", "Verlet" or "Stormer-Verlet".
 The variable Tau denotes the maximal affine parameter at which the trajectory is computed, N is the number of discretization points, Mu is the "massiveness" of the particle: Mu=1 for a massive particle and Mu=0 for a photon.
 Finally, the variable Conserv is set to 1 if the user is willing to compute the Hamiltonian and Carter constant at each node of the discretization. Otherwise, the user is invited to set Conserv to 0.
 
