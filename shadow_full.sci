@@ -127,7 +127,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
                 r=2*V(1)/Rs; th=V(2); ph=V(3); rb=sqrt(r^2+a^2); Dr=(1-Lambda*r^2/3)*(r^2+a^2)-2*r+rq; S=r^2+a^2*cos(th)^2; Dt=1+Lambda*a^2*cos(th)^2/3;
-                grav_shift=1/sqrt((Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
+                grav_shift=1/sqrt(abs(Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4); T=T/grav_shift;
                 if Accretion_data(7)<>0 then
                     bright=Accretion_data(7)*4.086e-21*T^5;
@@ -143,7 +143,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 veloc=cosmo_inv_met_mat([0,r,th,ph],2,rq,a)*[pt;V(4);V(5);pph]; al=(a+r^2/sqrt(-Lambda*r^4/3+r-rq))/rb;
                 velockep=[-sin(ph),cos(ph),0]/al; veloc=velocity([r,th,ph,veloc(2),veloc(3),veloc(4)]);
                 doppler_shift=(1-sum(veloc.*velockep)/norm(veloc,2))/sqrt(1-1/al^2);
-                grav_shift=1/sqrt((Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
+                grav_shift=1/sqrt(abs(Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4); T=T/(grav_shift*doppler_shift);
                 if Accretion_data(7)<>0 then
                     bright=Accretion_data(7)*4.086e-21*T^5;
@@ -183,7 +183,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
                 r=2*V(1)/Rs; th=V(2); ph=V(3); rb=sqrt(r^2+a^2); Dr=(1-Lambda*r^2/3)*(r^2+a^2)-2*r+rq; S=r^2+a^2*cos(th)^2; Dt=1+Lambda*a^2*cos(th)^2/3;
-                grav_shift=1/sqrt((Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
+                grav_shift=1/sqrt(abs(Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
                 doppler_coeff=1-sqrt((2*rb^2 + a*(a - 4)*rb + 2*a^2)/rb^3);
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4);
                 if Accretion_data(7)<>0 then
@@ -199,7 +199,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 veloc=cosmo_inv_met_mat([0,r,th,ph],2,rq,a)*[pt;V(4);V(5);pph]; al=(a+r^2/sqrt(-Lambda*r^4/3+r-rq))/rb;
                 velockep=[-sin(ph),cos(ph),0]/al; veloc=velocity([r,th,ph,veloc(2),veloc(3),veloc(4)]);
                 doppler_shift=(1-sum(veloc.*velockep)/norm(veloc,2))/sqrt(1-1/al^2);
-                grav_shift=1/sqrt((Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
+                grav_shift=1/sqrt(abs(Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
                 doppler_coeff=1-sqrt((2*rb^2 + a*(a - 4)*rb + 2*a^2)/rb^3);
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4);
                 if Accretion_data(7)<>0 then
@@ -234,7 +234,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         elseif (Accretion_data(3)==" " & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
                 r=2*V(1)/Rs; th=V(2); ph=V(3); rb=sqrt(r^2+a^2); Dr=(1-Lambda*r^2/3)*(r^2+a^2)-2*r+rq; S=r^2+a^2*cos(th)^2; Dt=1+Lambda*a^2*cos(th)^2/3;
-                grav_shift=1/sqrt((Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
+                grav_shift=1/sqrt(abs(Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
                 colou=doppler_color(grav_shift);
                 bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 cb=[colou,bright];
@@ -245,7 +245,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 veloc=cosmo_inv_met_mat([0,r,th,ph],2,rq,a)*[pt;V(4);V(5);pph]; al=(a+r^2/sqrt(-Lambda*r^4/3+r-rq))/rb;
                 velockep=[-sin(ph),cos(ph),0]/al; veloc=velocity([r,th,ph,veloc(2),veloc(3),veloc(4)]);
                 doppler_shift=(1-sum(veloc.*velockep)/norm(veloc,2))/sqrt(1-1/al^2);
-                grav_shift=1/sqrt((Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
+                grav_shift=1/sqrt(abs(Dr-a^2*sin(th)^2*Dt)/(chi^2*S));
                 colou=doppler_color(doppler_shift*grav_shift);
                 bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 cb=[colou,bright];
@@ -571,7 +571,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
                 r=2*V(1)/Rs; th=V(2); ph=V(3); rb=sqrt(r^2+a^2); D=r^2-2*r+a^2+rq; S=r^2+a^2*cos(th)^2;
-                grav_shift=1/sqrt((D-a^2*sin(th)^2)/S);
+                grav_shift=1/sqrt(abs(D-a^2*sin(th)^2)/S);
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4); T=T/grav_shift;
                 if Accretion_data(7)<>0 then
                     bright=Accretion_data(7)*4.086e-21*T^5;
@@ -587,7 +587,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 veloc=inv_met_mat([0,r,th,ph],2,rq,a)*[pt;V(4);V(5);pph]; al=(r^2+a*sqrt(r-rq))/sqrt((r^2+a^2)*(r-rq));
                 velockep=[-sin(ph),cos(ph),0]/al; veloc=velocity([r,th,ph,veloc(2),veloc(3),veloc(4)]);
                 doppler_shift=(1-sum(veloc.*velockep)/norm(veloc,2))/sqrt(1-1/al^2);
-                grav_shift=1/sqrt((D-a^2*sin(th)^2)/S);
+                grav_shift=1/sqrt(abs(D-a^2*sin(th)^2)/S);
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4); T=T/(grav_shift*doppler_shift);
                 if Accretion_data(7)<>0 then
                     bright=Accretion_data(7)*4.086e-21*T^5;
@@ -627,7 +627,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
                 r=2*V(1)/Rs; th=V(2); ph=V(3); rb=sqrt(r^2+a^2); D=r^2-2*r+a^2+rq; S=r^2+a^2*cos(th)^2;
-                grav_shift=1/sqrt((D-a^2*sin(th)^2)/S);
+                grav_shift=1/sqrt(abs(D-a^2*sin(th)^2)/S);
                 doppler_coeff=1-sqrt((2*rb^2 + a*(a - 4)*rb + 2*a^2)/rb^3);
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4);
                 if Accretion_data(7)<>0 then
@@ -643,7 +643,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 veloc=inv_met_mat([0,r,th,ph],2,rq,a)*[pt;V(4);V(5);pph]; al=(r^2+a*sqrt(r-rq))/sqrt((r^2+a^2)*(r-rq));
                 velockep=[-sin(ph),cos(ph),0]/al; veloc=velocity([r,th,ph,veloc(2),veloc(3),veloc(4)]);
                 doppler_shift=(1-sum(veloc.*velockep)/norm(veloc,2))/sqrt(1-1/al^2);
-                grav_shift=1/sqrt((D-a^2*sin(th)^2)/S);
+                grav_shift=1/sqrt(abs(D-a^2*sin(th)^2)/S);
                 doppler_coeff=1-sqrt((2*rb^2 + a*(a - 4)*rb + 2*a^2)/rb^3);
                 T=(T0/(rb*Rs)^3*(1-sqrt(2*rint/(rb*Rs))))^(1/4);
                 if Accretion_data(7)<>0 then
@@ -678,7 +678,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         elseif (Accretion_data(3)==" " & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
                 r=2*V(1)/Rs; th=V(2); ph=V(3); rb=sqrt(r^2+a^2); D=r^2-2*r+a^2+rq; S=r^2+a^2*cos(th)^2;
-                grav_shift=1/sqrt((D-a^2*sin(th)^2)/S);
+                grav_shift=1/sqrt(abs(D-a^2*sin(th)^2)/S);
                 colou=doppler_color(grav_shift);
                 bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 cb=[colou,bright];
@@ -689,7 +689,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 veloc=inv_met_mat([0,r,th,ph],2,rq,a)*[pt;V(4);V(5);pph]; al=(r^2+a*sqrt(r-rq))/sqrt((r^2+a^2)*(r-rq));
                 velockep=[-sin(ph),cos(ph),0]/al; veloc=velocity([r,th,ph,veloc(2),veloc(3),veloc(4)]);
                 doppler_shift=(1-sum(veloc.*velockep)/norm(veloc,2))/sqrt(1-1/al^2);
-                grav_shift=1/sqrt((D-a^2*sin(th)^2)/S);
+                grav_shift=1/sqrt(abs(D-a^2*sin(th)^2)/S);
                 colou=doppler_color(doppler_shift*grav_shift);
                 bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 cb=[colou,bright];
