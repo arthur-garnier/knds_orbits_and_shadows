@@ -1,5 +1,5 @@
 //Before all, change the current directory to the one containing the scripts and execute the functions:
-chdir("/home/arthur/Documents");//The absolute path to the package directory should be put here: chdir("PATH");
+chdir("/home/arthur/Documents/BH/GitHub");//The absolute path to the package directory should be put here: chdir("PATH");
 exec('aux.sci', -1); exec('orbit.sci', -1); exec('shadow.sci', -1); exec('shadow_full.sci', -1); exec('shadow_wp.sci', -1);
 
 //We test the functions for Lambda=0 and Lambda<>0
@@ -38,7 +38,7 @@ for Lambda=[0,3.3e-4]
     figure(); I=cSI*2/Rs*[tau/N:tau/N:tau]';
     plot2d(I,CARS(2:$,:),style=[color(colors(1)),color(colors(2)),color(colors(3)),color(colors(4)),color(colors(5)),color(colors(6)),color(colors(7)),color(colors(8)),color(colors(9))]);
     legend(eqnss,1);
-    xtitle('Carter constant conservation for different methods (mu='+mtlb_num2str(-mu)+')','proper time[M/c]','C/C0 where ');
+    xtitle('Carter constant conservation for different methods (mu='+mtlb_num2str(-mu)+')','proper time[M/c]','C/C0 where C is the Carter constant');
     aa = gcf(); aa.background = 8; aa=gce(); aa=aa.children(1); aa.background=8; aa.font_color=-1;
 
     //Maximal deviation (Hamilton and Carter) for each method:
@@ -51,10 +51,10 @@ for Lambda=[0,3.3e-4]
 
     //Testing the shadowing programs (the reader is invited to un-comment the three lines below to test the effect of the two shifts we introduced):
     Mass=3e30; Kerr=0.94; Newman=0.8; Image='milk16.jpeg';
-    Accretion=list(1,%pi/18,"Black-body","Doppler+",[1.455,6],[3],3800);
-    //Accretion=list(16,%pi/18," ","Gravitation",[1.455,6],[3],3800);
-    //Accretion=list(16,%pi/18," ","Doppler",[1.455,6],[3],3800);
-    //Accretion=list(16,%pi/18," ","Doppler+",[1.455,6],[3],3800);
+    Accretion=list(1,%pi/18,"Black-body","Doppler+",[1.455,6],[3],3800,1);
+    //Accretion=list(16,%pi/18," ","Gravitation",[1.455,6],[3],3800,0);
+    //Accretion=list(16,%pi/18," ","Doppler",[1.455,6],[3],3800,0);
+    //Accretion=list(16,%pi/18," ","Doppler+",[1.455,6],[3],3800,0);
     tic(); shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion); t_full=toc();
     tic(); shadow(Lambda,Mass,Kerr,Newman,Image,Accretion); t=toc();
     tic(); shadow_wp(Lambda,Mass,Newman,Image,Accretion); t_wp=toc();

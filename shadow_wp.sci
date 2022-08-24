@@ -11,6 +11,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
         Q=Newman*2*Mass*sqrt(%pi*e0*GSI); rq2=Q^2*GSI/(4*%pi*e0*cSI^4); rq=4*rq2/Rs^2;
         rs=2; rg=1; a=0; T_int=0; T_ext=0; lam=0.8;
         Mrate=Accretion_data(6); Mrate=Mrate(1)*Rs*cSI^2/(Mass*2*GSI); T0=3*cSI^2*Rs*Mrate/(2*%pi*sb);
+        Temp=[];
 
         if length(Accretion_data(6))>1 then
             T_int=Accretion_data(6); T_ext=T_int(3); T_int=T_int(2);
@@ -139,7 +140,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/doppler_shift];
+                cb=[colou,bright/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -152,7 +153,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift)];
+                cb=[colou,bright/(grav_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -168,7 +169,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift*doppler_shift)];
+                cb=[colou,bright/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -180,7 +181,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright];
+                cb=[colou,bright,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -195,7 +196,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift];
+                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -208,7 +209,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift];
+                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -224,7 +225,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift)];
+                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -236,7 +237,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright,doppler_coeff^2,1];
+                cb=[0,0,0,bright,doppler_coeff^2,1,T];
             endfunction
         elseif (Accretion_data(3)==" " & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -450,7 +451,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                             rtesti=rtest; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                             Cf=From_spherical(Rs*rtest/2,0,%pi/2,0,Phi,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                             Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]);
+                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                             if Accretion_data(3)=="Custom" then
                                 xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                             else
@@ -468,7 +469,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestp; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -480,7 +481,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestm; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -493,7 +494,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestm; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -505,7 +506,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestp; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -609,7 +610,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                             rtesti=rtest; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                             Cf=From_spherical(Rs*rtest/2,0,%pi/2,0,Phi,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                             Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]);
+                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                             if Accretion_data(3)=="Custom" then
                                 xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                             else
@@ -627,7 +628,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestp; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -638,7 +639,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestm; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -650,7 +651,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestm; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -661,7 +662,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 rtesti=rtestp; DDr=rtesti^2*(1-Lambda*rtesti^2/3)-2*rtesti+rq; Pr=sqrt(E^2*rtesti^4-DDr*(L^2+C))/DDr;
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -697,6 +698,23 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
         imshow(xredt);
         aa=gca();
         aa.isoview="on";
+        if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if Accretion_data(3)=="Custom" then
+                Text=T_ext; Tint=T_int;
+            else
+                Text=min(Temp); Tint=max(Temp);
+            end
+            h=gcf(); h.color_map=whitecolormap(1);
+            n=find(abs(Text-blackbody(:,1))==min(abs(Text-blackbody(:,1))))(1);
+            while blackbody(n,1)<Tint
+                addcolor(blackbody(n,2:4)); n=n+1;
+            end
+            colorbar(Text,Tint); colbar = gce();
+            colbar.type
+            ylabel(colbar, "Temperature [K]");
+            colbar.title.font_size = 3;
+            aa = gcf(); aa.background = 1; aa=gce(); aa=aa.children(1); aa.background=0;
+        end
     else
         //The "Lambda=0" version of the above instructions:
         c=1; G=1; M=1; GSI=6.67408e-11; cSI=299792458; e0=8.854187e-12; sb=5.67e-8; meth="adams";
@@ -705,6 +723,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
         Q=Newman*2*Mass*sqrt(%pi*e0*GSI); rq2=Q^2*GSI/(4*%pi*e0*cSI^4); rq=4*rq2/Rs^2;
         rs=2; rg=1; a=0; T_int=0; T_ext=0; lam=0.8;
         Mrate=Accretion_data(6); Mrate=Mrate(1)*Rs*cSI^2/(Mass*2*GSI); T0=3*cSI^2*Rs*Mrate/(2*%pi*sb);
+        Temp=[];
 
         if length(Accretion_data(6))>1 then
             T_int=Accretion_data(6); T_ext=T_int(3); T_int=T_int(2);
@@ -821,7 +840,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/doppler_shift];
+                cb=[colou,bright/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -834,7 +853,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift)];
+                cb=[colou,bright/(grav_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -850,7 +869,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift*doppler_shift)];
+                cb=[colou,bright/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -862,7 +881,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright];
+                cb=[colou,bright,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -877,7 +896,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift];
+                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -890,7 +909,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift];
+                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -906,7 +925,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift)];
+                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -918,7 +937,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright,doppler_coeff^2,1];
+                cb=[0,0,0,bright,doppler_coeff^2,1,T];
             endfunction
         elseif (Accretion_data(3)==" " & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -1117,7 +1136,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                             Pr=sqrt(rtest^2*E^2*(rtest^2+rq)-(rtest^2-2*rtest+rq)*(L^2+C))/(rtest^2-2*rtest+rq);
                             Cf=From_spherical(Rs*rtest/2,0,%pi/2,0,Phi,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                             Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]);
+                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                             if Accretion_data(3)=="Custom" then
                                 xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                             else
@@ -1135,7 +1154,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestp^2*E^2*(rtestp^2+rq)-(rtestp^2-2*rtestp+rq)*(L^2+C))/(rtestp^2-2*rtestp+rq);
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1147,7 +1166,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestm^2*E^2*(rtestm^2+rq)-(rtestm^2-2*rtestm+rq)*(L^2+C))/(rtestm^2-2*rtestm+rq);
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1160,7 +1179,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestm^2*E^2*(rtestm^2+rq)-(rtestm^2-2*rtestm+rq)*(L^2+C))/(rtestm^2-2*rtestm+rq);
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1172,7 +1191,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestp^2*E^2*(rtestp^2+rq)-(rtestp^2-2*rtestp+rq)*(L^2+C))/(rtestp^2-2*rtestp+rq);
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1279,7 +1298,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                             Pr=sqrt(rtest^2*E^2*(rtest^2+rq)-(rtest^2-2*rtest+rq)*(L^2+C))/(rtest^2-2*rtest+rq);
                             Cf=From_spherical(Rs*rtest/2,0,%pi/2,0,Phi,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                             Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]);
+                            cobra=accretion_disk([Rs*rtest/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                             if Accretion_data(3)=="Custom" then
                                 xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                             else
@@ -1297,7 +1316,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestp^2*E^2*(rtestp^2+rq)-(rtestp^2-2*rtestp+rq)*(L^2+C))/(rtestp^2-2*rtestp+rq);
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1308,7 +1327,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestm^2*E^2*(rtestm^2+rq)-(rtestm^2-2*rtestm+rq)*(L^2+C))/(rtestm^2-2*rtestm+rq);
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1320,7 +1339,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestm^2*E^2*(rtestm^2+rq)-(rtestm^2-2*rtestm+rq)*(L^2+C))/(rtestm^2-2*rtestm+rq);
                                 Cf=From_spherical(Rs*rtestm/2,0,%pi/2,0,Phim,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestm/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1331,7 +1350,7 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
                                 Pr=sqrt(rtestp^2*E^2*(rtestp^2+rq)-(rtestp^2-2*rtestp+rq)*(L^2+C))/(rtestp^2-2*rtestp+rq);
                                 Cf=From_spherical(Rs*rtestp/2,0,%pi/2,0,Phip,0); Cf=rot([1,0,0],atan(yy,xx),[Cf(1);Cf(3);Cf(5)]);
                                 Cf=rot([0,1,0],xi,Cf); Cf=To_spherical(Cf(1),0,Cf(2),0,Cf(3),0);
-                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]);
+                                cobra=accretion_disk([Rs*rtestp/2,%pi/2,Cf(5),Pr,Pth]); Temp=[Temp,cobra($)];
                                 if Accretion_data(3)=="Custom" then
                                     xred(i,j,1)=-exp(1); xred(i,j,2)=cobra(4); xred(i,j,3)=cobra(6); dop_max(i,j)=cobra(5);
                                 else
@@ -1368,5 +1387,22 @@ function shadow_wp(Lambda,Mass,Newman,Image,Accretion_data)
         imshow(xredt);
         aa=gca();
         aa.isoview="on";
+        if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if Accretion_data(3)=="Custom" then
+                Text=T_ext; Tint=T_int;
+            else
+                Text=min(Temp); Tint=max(Temp);
+            end
+            h=gcf(); h.color_map=whitecolormap(1);
+            n=find(abs(Text-blackbody(:,1))==min(abs(Text-blackbody(:,1))))(1);
+            while blackbody(n,1)<Tint
+                addcolor(blackbody(n,2:4)); n=n+1;
+            end
+            colorbar(Text,Tint); colbar = gce();
+            colbar.type
+            ylabel(colbar, "Temperature [K]");
+            colbar.title.font_size = 3;
+            aa = gcf(); aa.background = 1; aa=gce(); aa=aa.children(1); aa.background=0;
+        end
     end
 endfunction

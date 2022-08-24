@@ -9,6 +9,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         x0=50000; sizee=Accretion_data(5); rint=sizee(1)*Rs; rext=sizee(2)*Rs; rf=60000;
         rs=2; rg=1; a=Kerr; T_int=0; T_ext=0; lam=0.8; chi=1+Lambda*a^2/3;
         Mrate=Accretion_data(6); Mrate=Mrate(1)*Rs*cSI^2/(Mass*2*GSI); T0=3*cSI^2*Rs*Mrate/(2*%pi*sb);
+        Temp=[];
         if length(Accretion_data(6))>1 then
             T_int=Accretion_data(6); T_ext=T_int(3); T_int=T_int(2);
         end
@@ -122,7 +123,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/doppler_shift];
+                cb=[colou,bright/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -135,7 +136,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift)];
+                cb=[colou,bright/(grav_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -151,7 +152,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift*doppler_shift)];
+                cb=[colou,bright/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -163,7 +164,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright];
+                cb=[colou,bright,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -178,7 +179,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift];
+                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -191,7 +192,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift];
+                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -207,7 +208,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift)];
+                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -219,7 +220,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright,doppler_coeff^2,1];
+                cb=[0,0,0,bright,doppler_coeff^2,1,T];
             endfunction
         elseif (Accretion_data(3)==" " & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -337,6 +338,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         rb=sqrt(Vec(1,i)^2+a^2);
                         if (rb*Rs/2>rint & rb*Rs/2<rext & abs(theta(i)-%pi/2)<1/100 & vef==zeros(1,4)) then 
                             vef=[BoyerLindquist_bis(R(i),theta(i),phi(i))',accretion_disk([R(i),theta(i),phi(i),PR(i),PTH(i)])];
+                            Temp=[Temp,vef($)];
                         end
                     end
                     for i=[1:length(R)]
@@ -418,6 +420,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         if (rb*Rs/2>rint & rb*Rs/2<rext & whitness==0) then
                             whitness=1;
                             vef=[BoyerLindquist_bis(R(l),theta(l),phi(l))',accretion_disk([R(l),theta(l),phi(l),PR(l),PTH(l)])];
+                            Temp=[Temp,vef($)];
                             if Accretion_data(3)=="Custom" then
                                 xred(i,j,1)=-exp(1); xred(i,j,2)=vef(7); xred(i,j,3)=vef(9); dop_max(i,j)=vef(8);
                             else
@@ -450,6 +453,23 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         imshow(xredt);
         aa=gca();
         aa.isoview="on";
+        if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if Accretion_data(3)=="Custom" then
+                Text=T_ext; Tint=T_int;
+            else
+                Text=min(Temp); Tint=max(Temp);
+            end
+            h=gcf(); h.color_map=whitecolormap(1);
+            n=find(abs(Text-blackbody(:,1))==min(abs(Text-blackbody(:,1))))(1);
+            while blackbody(n,1)<Tint
+                addcolor(blackbody(n,2:4)); n=n+1;
+            end
+            colorbar(Text,Tint); colbar = gce();
+            colbar.type
+            ylabel(colbar, "Temperature [K]");
+            colbar.title.font_size = 3;
+            aa = gcf(); aa.background = 1; aa=gce(); aa=aa.children(1); aa.background=0;
+        end
     else
         c=1; G=1; M=1; GSI=6.67408e-11; cSI=299792458; e0=8.854187e-12; sb=5.67e-8; meth="adams";
         Rs=2*GSI*Mass/cSI^2; J=Kerr*GSI*Mass^2/cSI; A=J/(Mass*cSI); alpha=-Accretion_data(2);
@@ -457,6 +477,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         x0=50000; sizee=Accretion_data(5); rint=sizee(1)*Rs; rext=sizee(2)*Rs; rf=60000;
         rs=2; rg=1; a=Kerr; T_int=0; T_ext=0; lam=0.8; chi=1;
         Mrate=Accretion_data(6); Mrate=Mrate(1)*Rs*cSI^2/(Mass*2*GSI); T0=3*cSI^2*Rs*Mrate/(2*%pi*sb);
+        Temp=[];
         if length(Accretion_data(6))>1 then
             T_int=Accretion_data(6); T_ext=T_int(3); T_int=T_int(2);
         end
@@ -566,7 +587,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/doppler_shift];
+                cb=[colou,bright/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -579,7 +600,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift)];
+                cb=[colou,bright/(grav_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -595,7 +616,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright/(grav_shift*doppler_shift)];
+                cb=[colou,bright/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Black-body" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -607,7 +628,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
                 colou=blackbody(find(abs(T-blackbody(:,1))==min(abs(T-blackbody(:,1))))(1),2:4);
-                cb=[colou,bright];
+                cb=[colou,bright,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -622,7 +643,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift];
+                cb=[0,0,0,bright/doppler_shift,doppler_coeff^2,1/doppler_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Gravitation") then
             function cb=accretion_disk(V)
@@ -635,7 +656,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift];
+                cb=[0,0,0,bright/grav_shift,doppler_coeff^2,1/grav_shift,T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)=="Doppler+") then
             function cb=accretion_disk(V)
@@ -651,7 +672,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift)];
+                cb=[0,0,0,bright/(grav_shift*doppler_shift)^0,doppler_coeff^2,1/(grav_shift*doppler_shift),T];
             endfunction
         elseif (Accretion_data(3)=="Custom" & Accretion_data(4)==" ") then
             function cb=accretion_disk(V)
@@ -663,7 +684,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                 else
                     bright=1+(rb*Rs/2-rint)*(lam-1)/(rext-rint);
                 end
-                cb=[0,0,0,bright,doppler_coeff^2,1];
+                cb=[0,0,0,bright,doppler_coeff^2,1,T];
             endfunction
         elseif (Accretion_data(3)==" " & Accretion_data(4)=="Doppler") then
             function cb=accretion_disk(V)
@@ -776,6 +797,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         rb=sqrt(Vec(1,i)^2+a^2);
                         if (rb*Rs/2>rint & rb*Rs/2<rext & abs(theta(i)-%pi/2)<1/100 & vef==zeros(1,4)) then 
                             vef=[BoyerLindquist_bis(R(i),theta(i),phi(i))',accretion_disk([R(i),theta(i),phi(i),PR(i),PTH(i)])];
+                            Temp=[Temp,vef($)];
                         end
                     end
                     for i=[1:length(R)]
@@ -857,6 +879,7 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         if (rb*Rs/2>rint & rb*Rs/2<rext & whitness==0) then
                             whitness=1;
                             vef=[BoyerLindquist_bis(R(l),theta(l),phi(l))',accretion_disk([R(l),theta(l),phi(l),PR(l),PTH(l)])];
+                            Temp=[Temp,vef($)];
                             if Accretion_data(3)=="Custom" then
                                 xred(i,j,1)=-exp(1); xred(i,j,2)=vef(7); xred(i,j,3)=vef(9); dop_max(i,j)=vef(8);
                             else
@@ -888,5 +911,22 @@ function shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
         imshow(xredt);
         aa=gca();
         aa.isoview="on";
+        if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if Accretion_data(3)=="Custom" then
+                Text=T_ext; Tint=T_int;
+            else
+                Text=min(Temp); Tint=max(Temp);
+            end
+            h=gcf(); h.color_map=whitecolormap(1);
+            n=find(abs(Text-blackbody(:,1))==min(abs(Text-blackbody(:,1))))(1);
+            while blackbody(n,1)<Tint
+                addcolor(blackbody(n,2:4)); n=n+1;
+            end
+            colorbar(Text,Tint); colbar = gce();
+            colbar.type
+            ylabel(colbar, "Temperature [K]");
+            colbar.title.font_size = 3;
+            aa = gcf(); aa.background = 1; aa=gce(); aa=aa.children(1); aa.background=0;
+        end
     end
 endfunction
