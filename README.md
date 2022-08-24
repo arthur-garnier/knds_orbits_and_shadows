@@ -19,7 +19,7 @@ Execute the file example.sce; it displays all the functions of the programs, so 
 Description of the main functions of the package:
 
 
-- First, the file 'aux.sci' contains all the auxiliary functions that are needed for the computations, namely the metric matrices, their derivatives and the Christoffel symbols.
+- First, the file 'auxi.sci' contains all the auxiliary functions that are needed for the computations, namely the metric matrices, their derivatives and the Christoffel symbols.
 It also contains the library for the black-body radiation colors from http://www.vendian.org/mncharity/dir3/blackbody/.
 
 
