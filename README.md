@@ -62,5 +62,5 @@ The function shadow_wp.sci only uses the Weierstrass function and is thus well s
 
 ---------------------------------------------------------------------------------------------------
 
-For more details on the equations and modelization, the reader is refered to the article available at {ARXIV URL}.
+For more details on the equations and modelization, the reader is refered to the article available at https://hal.archives-ouvertes.fr/hal-03762454.
 For any question, suggestion, commentary, remark, the user is invited to contact the author by email at art-uhr[at]orange[dot]fr.
