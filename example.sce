@@ -1,11 +1,11 @@
 //Before all, change the current directory to the one containing the scripts and execute the functions:
-chdir("/home/arthur/Documents/BH/GitHub");//The absolute path to the package directory should be put here: chdir("PATH");
-exec('auxi.sci', -1); exec('orbit.sci', -1); exec('shadow.sci', -1); exec('shadow_full.sci', -1); exec('shadow_wp.sci', -1);
+chdir("/home/arthur/Documents/BH/GitHub/New");//The absolute path to the package directory should be put here: chdir("PATH");
+exec('auxi.sci', -1); exec('orbit.sci', -1); exec('shadow.sci', -1);
 
 //We test the functions for Lambda=0 and Lambda<>0
 for Lambda=[0,3.3e-4]
     //First, we define the required parameters and initial data:
-    cSI=299792458; GSI=6.67408e-11; Rs=5000; M=cSI^2*Rs/(2*GSI); a=0.75; Q=0.5;
+    cSI=299792458; GSI=6.67408e-11; M=4e30; Rs=2*GSI*M/cSI^2; a=0.95; Q=0.3;
 
     //The initial value of the (massive) orbit:
     X=[30656,%pi/2,0,0,1677.2693,2234.125]'; tau=0.0075; N=1000; mu=1;
@@ -20,7 +20,7 @@ for Lambda=[0,3.3e-4]
     //On a new figure, draw the Schwarzschild sphere and the orbit using the various formulations:
     figure(); plot3d(xx,yy,zz); times=[]; HAMS=[]; CARS=[];
     for i=[1:size(eqnss)(2)]
-        tic(); [Vec,HAM,CAR]=orbit(Lambda,M,a,Q,X,eqnss(i),tau,N,mu,1); ttt=toc(); times=[times,ttt];
+        tic(); [Vec,HAM,CAR]=orbit(Lambda,M,a,Q,X,eqnss(i),tau,N,mu,1,0); ttt=toc(); times=[times,ttt];
         R=Vec(1,:); theta=Vec(2,:); phi=Vec(3,:); Mm=[1;X(4);X(5);X(6)]; HAMS(:,$+1)=HAM/HAM(2); CARS(:,$+1)=CAR/CAR(2);
         param3d(sqrt(R.^2+a^2).*sin(theta).*cos(phi),sqrt(R.^2+a^2).*sin(theta).*sin(phi),R.*cos(theta),"x@y@z"); curve = gce(); curve.foreground = color(colors(i));
     end
@@ -50,12 +50,12 @@ for Lambda=[0,3.3e-4]
     //------------------------------------------------------------------------------
 
     //Testing the shadowing programs (the reader is invited to un-comment the three lines below to test the effect of the two shifts we introduced):
-    Mass=3e30; Kerr=0.94; Newman=0.8; Image='milk16.jpeg';
+    Mass=4e30; Kerr=0.95; Newman=0.3; Image='figure24.png';
     Accretion=list(1,%pi/18,"Black-body","Doppler+",[1.455,6],[3],3800,1);
     //Accretion=list(16,%pi/18," ","Gravitation",[1.455,6],[3],3800,0);
     //Accretion=list(16,%pi/18," ","Doppler",[1.455,6],[3],3800,0);
     //Accretion=list(16,%pi/18," ","Doppler+",[1.455,6],[3],3800,0);
-    tic(); shadow_full(Lambda,Mass,Kerr,Newman,Image,Accretion); t_full=toc();
-    tic(); shadow(Lambda,Mass,Kerr,Newman,Image,Accretion); t=toc();
-    tic(); shadow_wp(Lambda,Mass,Newman,Image,Accretion); t_wp=toc();
+    tic(); shadow(Lambda,Mass,Kerr,Newman,Image,Accretion); t_full=toc();
+    //tic(); shadow(Lambda,Mass,Kerr,Newman,Image,Accretion); t=toc();
+    tic(); shadow(Lambda,Mass,0,Newman,Image,Accretion); t_wp=toc();
 end

@@ -473,7 +473,7 @@ endfunction
 
 
 
-//RGB values for the temperature of a black-body radiation (see http://www.vendian.org/mncharity/dir3/blackbody/)
+//RGB values for the temperature of a black-body radiation (see http://www.vendian.org/mncharity/dir3/blackbody/ )
  blackbody=[ 1000  1.0000 0.0337 0.0000;
   1000  1.0000 0.0401 0.0000;
   1100  1.0000 0.0592 0.0000;

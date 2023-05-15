@@ -1,11 +1,11 @@
 //The function that computes the trajectory of a test particle. 
-function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Conserv)
+function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Conserv,e)
     if Lambda<>0 then
         //Fundamental constants, normalized parameters and initial conditions
-        GSI=6.67408e-11; cSI=299792458; e0=8.854187e-12; e=0;
-        //Mass=cSI^2*Rs/(2*GSI); J=Kerr*GSI*Mass^2/cSI; a=J/(Mass*cSI); 
-        Rs=2*GSI*Mass/cSI^2; J=Kerr*GSI*Mass^2/cSI; a=J/(Mass*cSI); 
-        Q=Newman*2*Mass*sqrt(%pi*e0*GSI*(1-Kerr^2)); rq2=Q^2*GSI/(4*%pi*e0*cSI^4); rq=4*rq2/Rs^2;
+        GSI=6.67408e-11; cSI=299792458; e0=8.854187e-12; //e=0;
+        //Mass=cSI^2*Rs/(2*GSI); J=Kerr*GSI*Mass^2/cSI; a=J/(Mass*cSI);
+        Rs=2*GSI*Mass/cSI^2; J=Kerr*GSI*Mass^2/cSI; a=J/(Mass*cSI);
+        Q=Newman*2*Mass*sqrt(%pi*e0*GSI*(1-0*Kerr^2)); rq2=Q^2*GSI/(4*%pi*e0*cSI^4); rq=4*rq2/Rs^2;//WARNING 0*Kerr^2
         G=1; c=1; Mass=1; rs=2; rg=1; a=Kerr; Q=sqrt(rq*4*%pi*e0); tau=2*cSI/Rs*Tau; chi=1+Lambda*a^2/3;
         IC=[2/Rs*IniConds(1);IniConds(2);IniConds(3);IniConds(4)/cSI;IniConds(5)*Rs/(2*cSI);IniConds(6)*Rs/(2*cSI)];
         //Compute \dot{t}_0 using Carter's formulas.
@@ -66,7 +66,8 @@ function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Con
             L=R^2*Pp; X=[1/R;-Rp/L];
             //Function for 'ode'
             function Y=f(U)
-                Y=[U(2);U(1)*(-2*rq*U(1)^2+3*U(1)-1-mu*rq/L^2)+mu/L^2-Lambda*mu/(3*L^2*U(1)^3)];
+                //Y=[U(2);U(1)*(-2*rq*U(1)^2+3*U(1)-1-mu*rq/L^2)+mu/L^2-Lambda*mu/(3*L^2*U(1)^3)];
+                Y=[U(2);U(1)*(-2*rq*U(1)^2+3*U(1)-1+(e^2-mu)*rq/L^2)+(E0*e*sqrt(rq)+mu)/L^2-Lambda*mu/(3*L^2*U(1)^3)];
             endfunction
             function U=F(t,V)
                 U=f(V);
@@ -267,9 +268,9 @@ function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Con
         end
     else
         //The same functions as above, but simplified when Lambda=0 (faster)
-        GSI=6.67408e-11; cSI=299792458; e0=8.854187e-12; e=0;
+        GSI=6.67408e-11; cSI=299792458; e0=8.854187e-12; //e=0;
         Mass=cSI^2*Rs/(2*GSI); J=Kerr*GSI*Mass^2/cSI; a=J/(Mass*cSI); 
-        Q=Newman*2*Mass*sqrt(%pi*e0*GSI*(1-Kerr^2)); rq2=Q^2*GSI/(4*%pi*e0*cSI^4); rq=4*rq2/Rs^2;
+        Q=Newman*2*Mass*sqrt(%pi*e0*GSI*(1-0*Kerr^2)); rq2=Q^2*GSI/(4*%pi*e0*cSI^4); rq=4*rq2/Rs^2;//WARNING 0*Kerr^2
         G=1; c=1; Mass=1; rs=2; rg=1; a=Kerr; Q=sqrt(rq*4*%pi*e0); tau=2*cSI/Rs*Tau;
         IC=[2/Rs*IniConds(1);IniConds(2);IniConds(3);IniConds(4)/cSI;IniConds(5)*Rs/(2*cSI);IniConds(6)*Rs/(2*cSI)];
         dtau=tau/N; r0=IC(1); th0=IC(2); ph0=IC(3); rp0=IC(4); thp0=IC(5); php0=IC(6); S0=r0^2+a^2*cos(th0)^2; D0=r0^2-2*r0+a^2+rq;
@@ -321,7 +322,8 @@ function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Con
             R=CC(1); Rp=CC(2); T=CC(3); Tp=CC(4); P=CC(5); Pp=CC(6);
             L=R^2*Pp; X=[1/R;-Rp/L];
             function Y=f(U)
-                Y=[U(2);U(1)*(-2*rq*U(1)^2+3*U(1)-1-mu*rq/L^2)+mu/L^2];
+                //Y=[U(2);U(1)*(-2*rq*U(1)^2+3*U(1)-1-mu*rq/L^2)+mu/L^2];
+                Y=[U(2);U(1)*(-2*rq*U(1)^2+3*U(1)-1+(e^2-mu)*rq/L^2)+(E0*e*sqrt(rq)+mu)/L^2];
             endfunction
             function U=F(t,V)
                 U=f(V);
@@ -401,11 +403,11 @@ function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Con
             BBi=rot(O0,-th0,BBi); BBv=rot(O0,-th0,BBv);
             CC=To_spherical(BBi(1),BBv(1),BBi(2),BBv(2),BBi(3),BBv(3));
             R=CC(1); Rp=CC(2); T=CC(3); Tp=CC(4); P=CC(5); Pp=CC(6);
-            E=sqrt(Rp^2+(1-2/R+rq/R^2)*mu+Pp^2*(R^2-2*R+rq)); L=R^2*Pp;
-            rpol=roots(poly([-rq,2,-1-mu*rq/L^2,2*mu/L^2,(E^2-mu)/L^2],'x','c'));
+            E=-e*sqrt(rq)/R+sqrt(Rp^2+(1-2/R+rq/R^2)*mu+Pp^2*(R^2-2*R+rq)); L=R^2*Pp;
+            rpol=roots(poly([-rq,2,-1+(e^2-mu)*rq/L^2,2*(E*e*sqrt(rq)+mu)/L^2,(E^2-mu)/L^2],'x','c'));
             frpol=rpol(find(abs(rpol-real(rpol))==min(abs(rpol-real(rpol)))));
             rbar=frpol(find(abs(frpol)==min(abs(frpol)))(1));
-            del=(E^2-mu)/L^2; gam=2*(2*del*rbar+mu/L^2); bet=-1-mu*rq/L^2+3*rbar*(gam-2*del*rbar); alp=2+rbar*(2*bet-rbar*(3*gam-4*del*rbar));
+            del=(E^2-mu)/L^2; gam=2*(2*del*rbar+(E*e*sqrt(rq)+mu)/L^2); bet=-1+(e^2-mu)*rq/L^2+3*rbar*(gam-2*del*rbar); alp=2+rbar*(2*bet-rbar*(3*gam-4*del*rbar));
             g2=(bet^2/3-alp*gam)/4; g3=(alp*bet*gam/6-alp^2*del/2-bet^3/27)/8;
             function zz=weierP(z)
                 N0=12;
@@ -463,7 +465,6 @@ function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Con
                 end
             end
         elseif Form=="Carter" then
-            e=0;
             X=IC; r=X(1); th=X(2); ph=X(3); rp=X(4); thp=X(5); php=X(6); mu=-Mu; CAR=[];
             S=r^2+a^2*cos(th)^2; D=r^2-2*r+a^2+rq;
             E=-e*r*sqrt(rq)/S+sqrt(D*php^2*sin(th)^2+(a^2*sin(th)^2-D)*(mu-rp^2*S/D-S*thp^2)/S);
