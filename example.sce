@@ -1,5 +1,5 @@
 //Before all, change the current directory to the one containing the scripts and execute the functions:
-chdir("/home/arthur/Documents/BH/GitHub/New");//The absolute path to the package directory should be put here: chdir("PATH");
+chdir("/home/arthur/Documents/BH/GitHub");//The absolute path to the package directory should be put here: chdir("PATH");
 exec('auxi.sci', -1); exec('orbit.sci', -1); exec('shadow.sci', -1);
 
 //We test the functions for Lambda=0 and Lambda<>0
