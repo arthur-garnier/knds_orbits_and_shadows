@@ -56,5 +56,5 @@ The output is just the computed picture, in a Scilab figure.
 
 ---------------------------------------------------------------------------------------------------
 
-For more details on the equations and modelization, the reader is refered to the article available at {CQG URL}.
+For more details on the equations and modelization, the reader is refered to the article available at https://iopscience.iop.org/article/10.1088/1361-6382/accbfe.
 For any question, suggestion, commentary, remark, the user is invited to contact the author by email at arthur.garnier[at]math[dot]cnrs[dot]fr.
