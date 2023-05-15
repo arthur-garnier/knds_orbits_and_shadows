@@ -54,13 +54,7 @@ Finally, the eight entry is an integer. If it is set to 1, then the color bar co
 The output is just the computed picture, in a Scilab figure.
 
 
-- shadow_full.sci and shadow_wp.sci
-
-The synthax, input and output are exactly the same as for shadow.sci.
-The difference is that the function shadow.sci doesn't use the Weierstrass function to simplify the computation of the coordinate range of the pixels. So this program is more efficient for images with a very low resolution, but it is much slower than the function shadow.sci.
-The function shadow_wp.sci only uses the Weierstrass function and is thus well suited for non-rotating (a=0) black holes only. The user is encouraged to prefer this function for non-rotating black holes, as it is much faster than shadow.sci.
-
 ---------------------------------------------------------------------------------------------------
 
-For more details on the equations and modelization, the reader is refered to the article available at https://hal.archives-ouvertes.fr/hal-03762454.
-For any question, suggestion, commentary, remark, the user is invited to contact the author by email at art-uhr[at]orange[dot]fr.
+For more details on the equations and modelization, the reader is refered to the article available at {CQG URL}.
+For any question, suggestion, commentary, remark, the user is invited to contact the author by email at arthur.garnier[at]math[dot]cnrs[dot]fr.
