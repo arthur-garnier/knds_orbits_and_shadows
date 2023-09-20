@@ -301,7 +301,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         k=Q+chi^2*(a*E-Lz)^2;
                         X=[r,th,ph,pr,pth]';
                         Vec=[X];
-                        tau0=abs(1/(1+333*(Lambda)/3))*tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));//tau0=abs(1/(1+333*(Lambda)/3))*tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2))
+                        tau0=tau;//abs(1/(1+333*(Lambda)/3))*tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2))
                         AAA=execstr('ode(meth,X,0,[0:dtau:tau0],Carter_ter)','errcatch');
                         if AAA==0 then Vec=ode(meth,X,0,[0:dtau:tau0],Carter_ter);
                         end
@@ -420,7 +420,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         Q=Dt*pth^2+chi^2*cos(th)^2/Dt*(Lz^2/sin(th)^2-a^2*(E^2+Lambda^2/3*(a*E-Lz)^2));
                         k=Q+chi^2*(a*E-Lz)^2;
                         X=[r,th,ph,pr,pth]';
-                        tau0=abs(1/(1+333*(Lambda)/3))*tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
+                        tau0=tau;//abs(1/(1+333*(Lambda)/3))*tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
                         Vec=[X]; Tau=tau0;
                         AAA=execstr('ode(meth,X,0,[0:dtau:tau0],Carter_ter)','errcatch','n'); iter=0;
                         while (AAA<>0 & iter<itermax)
@@ -764,7 +764,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         k=Q+Lz^2+a^2*E^2;
                         X=[r,th,ph,pr,pth]';
                         Vec=[X];
-                        tau0=tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
+                        tau0=tau;//tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
                         AAA=execstr('ode(meth,X,0,[0:dtau:tau0],Carter_ter)','errcatch')
                         if AAA==0 then Vec=ode(meth,X,0,[0:dtau:tau0],Carter_ter);
                         end
@@ -803,7 +803,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         Q=pth^2+cos(th)^2*(Lz^2/sin(th)^2-a^2*E^2);
                         k=Q+Lz^2+a^2*E^2;
                         X=[r,th,ph,pr,pth]';
-                        tau0=tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
+                        tau0=tau;//tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
                         Vec=[X]; Tau=tau0;
                         AAA=execstr('ode(meth,X,0,[0:dtau:tau0],Carter_ter)','errcatch','n'); iter=0;
                         while (AAA<>0 & iter<itermax)
@@ -872,7 +872,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
                         Q=pth^2+cos(th)^2*(Lz^2/sin(th)^2-a^2*E^2);
                         k=Q+Lz^2+a^2*E^2;
                         X=[r,th,ph,pr,pth]';
-                        tau0=tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
+                        tau0=tau;//tau*(1.75-sqrt(y^2+z^2)/sqrt(max(XX)^2+max(YY)^2));
                         Vec=[X]; Tau=tau0;
                         AAA=execstr('ode(meth,X,0,[0:dtau:tau0],Carter_ter)','errcatch','n'); iter=0;
                         while (AAA<>0 & iter<itermax)
