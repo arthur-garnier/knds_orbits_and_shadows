@@ -470,7 +470,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
             imshow(xredt);
             aa=gca();
             aa.isoview="on";
-            if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if (Accretion_data(1)>0 & Accretion_data(8)==1 & Accretion_data(3)<>" ") then
                 if Accretion_data(3)=="Custom" then
                     Text=T_ext; Tint=T_int;
                 else
@@ -921,7 +921,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
             imshow(xredt);
             aa=gca();
             aa.isoview="on";
-            if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if (Accretion_data(1)>0 & Accretion_data(8)==1 & Accretion_data(3)<>" ") then
                 if Accretion_data(3)=="Custom" then
                     Text=T_ext; Tint=T_int;
                 else
@@ -1648,7 +1648,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
             imshow(xredt);
             aa=gca();
             aa.isoview="on";
-            if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if (Accretion_data(1)>0 & Accretion_data(8)==1 & Accretion_data(3)<>" ") then
                 if Accretion_data(3)=="Custom" then
                     Text=T_ext; Tint=T_int;
                 else
@@ -2340,7 +2340,7 @@ function xredt=shadow(Lambda,Mass,Kerr,Newman,Image,Accretion_data)
             imshow(xredt);
             aa=gca();
             aa.isoview="on";
-            if (Accretion_data(8)==1 & Accretion_data(3)<>" ") then
+            if (Accretion_data(1)>0 & Accretion_data(8)==1 & Accretion_data(3)<>" ") then
                 if Accretion_data(3)=="Custom" then
                     Text=T_ext; Tint=T_int;
                 else
