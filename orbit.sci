@@ -269,7 +269,8 @@ function [Vecc,HAM,CAR]=orbit(Lambda,Mass,Kerr,Newman,IniConds,Form,Tau,N,Mu,Con
     else
         //The same functions as above, but simplified when Lambda=0 (faster)
         GSI=6.67408e-11; cSI=299792458; e0=8.854187e-12; //e=0;
-        Mass=cSI^2*Rs/(2*GSI); J=Kerr*GSI*Mass^2/cSI; a=J/(Mass*cSI); 
+        //Mass=cSI^2*Rs/(2*GSI);
+        Rs=2*GSI*Mass/cSI^2; J=Kerr*GSI*Mass^2/cSI; a=J/(Mass*cSI); 
         Q=Newman*2*Mass*sqrt(%pi*e0*GSI*(1-0*Kerr^2)); rq2=Q^2*GSI/(4*%pi*e0*cSI^4); rq=4*rq2/Rs^2;//WARNING 0*Kerr^2
         G=1; c=1; Mass=1; rs=2; rg=1; a=Kerr; Q=sqrt(rq*4*%pi*e0); tau=2*cSI/Rs*Tau;
         IC=[2/Rs*IniConds(1);IniConds(2);IniConds(3);IniConds(4)/cSI;IniConds(5)*Rs/(2*cSI);IniConds(6)*Rs/(2*cSI)];
